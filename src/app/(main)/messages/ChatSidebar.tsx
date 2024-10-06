@@ -19,9 +19,9 @@ interface ChatSidebarProps {
 
 export default function ChatSidebar({ open, onClose }: ChatSidebarProps) {
   const { user } = useSession();
-  const isPremiumUser = user?.isPremium; // Assuming this property exists
 
   const queryClient = useQueryClient();
+
   const { channel } = useChatContext();
 
   useEffect(() => {
@@ -48,50 +48,36 @@ export default function ChatSidebar({ open, onClose }: ChatSidebarProps) {
       className={cn(
         "size-full flex-col border-e md:flex md:w-72",
         open ? "flex" : "hidden",
-        !isPremiumUser && "blur-effect", // Apply blur effect if not premium
       )}
     >
-      <MenuHeader onClose={onClose} isPremiumUser={isPremiumUser} />
-      {isPremiumUser ? (
-        <ChannelList
-          filters={{
-            type: "messaging",
-            members: { $in: [user.id] },
-          }}
-          showChannelSearch
-          options={{ state: true, presence: true, limit: 8 }}
-          sort={{ last_message_at: -1 }}
-          additionalChannelSearchProps={{
-            searchForChannels: true,
-            searchQueryParams: {
-              channelFilters: {
-                filters: { members: { $in: [user.id] } },
-              },
+      <MenuHeader onClose={onClose} />
+      <ChannelList
+        filters={{
+          type: "messaging",
+          members: { $in: [user.id] },
+        }}
+        showChannelSearch
+        options={{ state: true, presence: true, limit: 8 }}
+        sort={{ last_message_at: -1 }}
+        additionalChannelSearchProps={{
+          searchForChannels: true,
+          searchQueryParams: {
+            channelFilters: {
+              filters: { members: { $in: [user.id] } },
             },
-          }}
-          Preview={ChannelPreviewCustom}
-        />
-      ) : (
-        <div className="p-4 text-center text-gray-500">
-          <p className="mb-4">This feature is available to premium users only.</p> {/* Added margin-bottom */}
-          <Button
-            style={{ backgroundColor: "#45942B", color: "white" }} // Custom button color
-            onClick={() => alert("Upgrade to premium to access chat!")}
-          >
-            Upgrade to Premium
-          </Button>
-        </div>
-      )}
+          },
+        }}
+        Preview={ChannelPreviewCustom}
+      />
     </div>
   );
 }
 
 interface MenuHeaderProps {
   onClose: () => void;
-  isPremiumUser: boolean;
 }
 
-function MenuHeader({ onClose, isPremiumUser }: MenuHeaderProps) {
+function MenuHeader({ onClose }: MenuHeaderProps) {
   const [showNewChatDialog, setShowNewChatDialog] = useState(false);
 
   return (
@@ -103,16 +89,14 @@ function MenuHeader({ onClose, isPremiumUser }: MenuHeaderProps) {
           </Button>
         </div>
         <h1 className="me-auto text-xl font-bold md:ms-2">Messages</h1>
-        {isPremiumUser && (
-          <Button
-            size="icon"
-            variant="ghost"
-            title="Start new chat"
-            onClick={() => setShowNewChatDialog(true)}
-          >
-            <MailPlus className="size-5" />
-          </Button>
-        )}
+        <Button
+          size="icon"
+          variant="ghost"
+          title="Start new chat"
+          onClick={() => setShowNewChatDialog(true)}
+        >
+          <MailPlus className="size-5" />
+        </Button>
       </div>
       {showNewChatDialog && (
         <NewChatDialog
