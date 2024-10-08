@@ -24,7 +24,7 @@ interface PostProps {
 }
 
 const openai = new OpenAI({
-  apiKey: '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',
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true
 });
 
