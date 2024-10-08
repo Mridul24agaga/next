@@ -30,26 +30,51 @@ export default function CommentInput({ post }: CommentInputProps) {
     );
   }
 
+  const addEmoji = (emoji: string) => {
+    setInput((prev) => prev + emoji);
+  };
+
+  const emojis = [
+    "🙏", "😢", "😭", "🥺", "😔", "🤲",
+    "👍", "❤️", "😂", "😊", "🎉", "👏",
+    "😮", "😡", "🤔", "💪", "🙌", "✨"
+  ];
+
   return (
-    <form className="flex w-full items-center gap-2" onSubmit={onSubmit}>
-      <Input
-        placeholder="Write a comment..."
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        autoFocus
-      />
-      <Button
-        type="submit"
-        variant="ghost"
-        size="icon"
-        disabled={!input.trim() || mutation.isPending}
-      >
-        {!mutation.isPending ? (
-          <SendHorizonal />
-        ) : (
-          <Loader2 className="animate-spin" />
-        )}
-      </Button>
-    </form>
+    <div className="w-full space-y-2">
+      <div className="flex flex-wrap justify-start gap-1">
+        {emojis.map((emoji) => (
+          <Button
+            key={emoji}
+            variant="outline"
+            size="sm"
+            onClick={() => addEmoji(emoji)}
+            className="px-2 py-1 min-w-[36px]"
+          >
+            {emoji}
+          </Button>
+        ))}
+      </div>
+      <form className="flex w-full items-center gap-2" onSubmit={onSubmit}>
+        <Input
+          placeholder="Write a comment..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          autoFocus
+        />
+        <Button
+          type="submit"
+          variant="ghost"
+          size="icon"
+          disabled={!input.trim() || mutation.isPending}
+        >
+          {!mutation.isPending ? (
+            <SendHorizonal />
+          ) : (
+            <Loader2 className="animate-spin" />
+          )}
+        </Button>
+      </form>
+    </div>
   );
 }
