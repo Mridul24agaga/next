@@ -36,7 +36,7 @@ const translateText = async (text: string, targetLang: string): Promise<string> 
         { role: "system", content: "You are a helpful assistant that translates text." },
         { role: "user", content: `Translate the following text to ${targetLang}:\n\n${text}` }
       ],
-      max_tokens: 150
+      max_tokens: 30
     });
     return response.choices[0].message.content || "Translation failed";
   } catch (error) {
@@ -53,7 +53,7 @@ const askAboutContent = async (content: string, query: string): Promise<string> 
         { role: "system", content: "You are a helpful assistant that answers questions about given content." },
         { role: "user", content: `Content: ${content}\n\nQuestion: ${query}` }
       ],
-      max_tokens: 150
+      max_tokens: 20
     });
     return response.choices[0].message.content || "Failed to get an answer";
   } catch (error) {

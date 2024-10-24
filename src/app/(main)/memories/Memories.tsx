@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { v4 as uuidv4 } from 'uuid';
 import { Grid, Card, CardMedia, Box, IconButton, Modal, Avatar, TextField, Button, Typography, Tooltip, Menu, MenuItem, Slider, Popover } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { X, Heart, MessageCircle, Send, Bookmark, Image as ImageIcon, Link, MapPin, Smile, Plus, Grid as GridIcon, Download, LayoutTemplate, Move, ZoomIn, ZoomOut, RotateCw, Edit3, Palette } from 'lucide-react';
+import { X, Heart, MessageCircle, Send, Bookmark, Image as ImageIcon, Link, MapPin, Smile, Grid as GridIcon, Download, LayoutTemplate, Move, ZoomIn, ZoomOut, RotateCw, Edit3, Palette } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 interface Photo {
@@ -82,17 +82,6 @@ const IconsBox = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginTop: theme.spacing(1),
-}));
-
-const GradientIconButton = styled(IconButton)(({ theme }) => ({
-  background: 'linear-gradient(45deg, #FF6F61 30%, #FF3F8C 90%)',
-  color: 'white',
-  borderRadius: '50%',
-  padding: theme.spacing(2),
-  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-  '&:hover': {
-    background: 'linear-gradient(45deg, #FF3F8C 30%, #FF6F61 90%)',
-  },
 }));
 
 const CollageImage = styled('img')({
@@ -394,9 +383,7 @@ export default function EnhancedMemoriesPage() {
 
   const downloadCollage = (post: Post) => {
     const collageElement = document.createElement('div');
-    collageElement.style.width =
-
- '600px';
+    collageElement.style.width = '600px';
     collageElement.style.height = '600px';
     collageElement.style.position = 'absolute';
     collageElement.style.left = '-9999px';
@@ -411,7 +398,9 @@ export default function EnhancedMemoriesPage() {
     setTimeout(() => {
       html2canvas(collageElement).then(canvas => {
         const link = document.createElement('a');
-        link.download = `collage-${post.id}.png`;
+        link.download = 
+
+ `collage-${post.id}.png`;
         link.href = canvas.toDataURL();
         link.click();
         document.body.removeChild(collageElement);
@@ -535,12 +524,6 @@ export default function EnhancedMemoriesPage() {
           </Grid>
         ))}
       </Grid>
-
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-        <GradientIconButton onClick={triggerFileInput}>
-          <Plus />
-        </GradientIconButton>
-      </Box>
 
       <input
         type="file"
