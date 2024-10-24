@@ -4,8 +4,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, PlusCircle, Settings, Upload, X } from 'lucide-react'
 
-// Remove the hardcoded API key
-// const OPENAI_API_KEY = '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'
 
 interface Message {
   role: 'user' | 'assistant'
