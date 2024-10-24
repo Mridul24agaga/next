@@ -17,7 +17,7 @@ export default function LegalTerms() {
       <main className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <div className="prose prose-sm sm:prose lg:prose-lg mx-auto">
           <h2>Introduction</h2>
-          <p>Welcome to MemoriesLived.com (the "Website"), a service provided by CJM Ashton, LLC ("we," "us," or "our"). By creating an account and accessing or using our Website, you agree to be bound by the following Terms of Service ("Terms") and Privacy Policy. Please read them carefully before using the Website.</p>
+          <p>Welcome to MemoriesLived.com (the &quot;Website&quot;), a service provided by CJM Ashton, LLC (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). By creating an account and accessing or using our Website, you agree to be bound by the following Terms of Service (&quot;Terms&quot;) and Privacy Policy. Please read them carefully before using the Website.</p>
           <p>Your use of the Website is subject to these Terms and our Privacy Policy, which govern your access to and use of the Website, and you agree to be bound by them. If you do not agree to these Terms, do not access or use the Website.</p>
 
           <h2>1. Use of the Website</h2>
@@ -25,7 +25,7 @@ export default function LegalTerms() {
           <p>By creating an account, you represent that you are at least 18 years of age (or the legal age of consent in your jurisdiction) and have the legal authority to agree to these Terms.</p>
 
           <h2>2. User Content</h2>
-          <p>You retain ownership of any content you post on the Website, including photos, videos, text, and other materials ("User Content"). However, by posting User Content, you grant us a worldwide, non-exclusive, royalty-free, sublicensable, and transferable license to use, distribute, reproduce, modify, adapt, publish, translate, publicly display, and create derivative works of such User Content.</p>
+          <p>You retain ownership of any content you post on the Website, including photos, videos, text, and other materials (&quot;User Content&quot;). However, by posting User Content, you grant us a worldwide, non-exclusive, royalty-free, sublicensable, and transferable license to use, distribute, reproduce, modify, adapt, publish, translate, publicly display, and create derivative works of such User Content.</p>
           <p>You are responsible for the content you post and agree not to post any content that is unlawful, defamatory, or violates the rights of others. We reserve the right to remove any User Content that violates these Terms.</p>
 
           <h2>3. Data Privacy and CCPA Compliance</h2>
@@ -43,10 +43,10 @@ export default function LegalTerms() {
           <p>To the maximum extent permitted by law, CJM Ashton, LLC and its officers, directors, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the Website; (ii) any unauthorized access to or use of our servers; (iii) any interruption or cessation of transmission to or from our Website; (iv) any bugs, viruses, Trojan horses, or the like that may be transmitted to or through our Website by any third party; or (v) any errors or omissions in any content posted or made available through the Website.</p>
 
           <h2>5. Indemnification</h2>
-          <p>You agree to indemnify, defend, and hold harmless CJM Ashton, LLC, its officers, directors, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, or expenses, including reasonable attorneys' fees and costs, arising out of or in any way connected with your access to or use of the Website, your violation of these Terms, or your violation of any third-party rights.</p>
+          <p>You agree to indemnify, defend, and hold harmless CJM Ashton, LLC, its officers, directors, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, or expenses, including reasonable attorneys&apos; fees and costs, arising out of or in any way connected with your access to or use of the Website, your violation of these Terms, or your violation of any third-party rights.</p>
 
           <h2>6. Arbitration Agreement</h2>
-          <p>Any dispute, controversy, or claim arising out of or relating to these Terms, or the breach, termination, enforcement, interpretation, or validity thereof, including the determination of the scope or applicability of this agreement to arbitrate, shall be determined by arbitration in [insert location]. The arbitration shall be administered by the American Arbitration Association ("AAA") in accordance with its Commercial Arbitration Rules and Mediation Procedures.</p>
+          <p>Any dispute, controversy, or claim arising out of or relating to these Terms, or the breach, termination, enforcement, interpretation, or validity thereof, including the determination of the scope or applicability of this agreement to arbitrate, shall be determined by arbitration in [insert location]. The arbitration shall be administered by the American Arbitration Association (&quot;AAA&quot;) in accordance with its Commercial Arbitration Rules and Mediation Procedures.</p>
           <p><strong>Class Action Waiver:</strong> You agree that any arbitration shall be conducted in your individual capacity only and not as a class action or other representative action. You expressly waive your right to file a class action or seek relief on a class basis.</p>
           <p><strong>Opt-Out:</strong> You have the right to opt out of this Arbitration Agreement by sending written notice of your decision to opt out to support@memorieslived.com within 30 days of first accepting these Terms.</p>
 
