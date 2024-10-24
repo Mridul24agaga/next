@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Heart, Users, Camera, Feather } from 'lucide-react'
+import { Heart, Users, Camera } from 'lucide-react'
 
 export default function AboutUs() {
   return (
@@ -44,18 +44,18 @@ export default function AboutUs() {
           <div className="mt-12 sm:mt-16">
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Our Heartfelt Mission</h3>
             <p className="mt-3 text-base sm:text-lg text-gray-600">
-              We're on a journey to transform the way we remember and celebrate lives. MemoriesLived.com is more than a platform; it's a compassionate space where grief finds solace, where joy resurfaces in shared stories, and where the legacy of those we've lost continues to inspire and guide us. Our mission is to make the act of remembering as beautiful, personal, and enduring as the lives we honor.
+              We&apos;re on a journey to transform the way we remember and celebrate lives. MemoriesLived.com is more than a platform; it&apos;s a compassionate space where grief finds solace, where joy resurfaces in shared stories, and where the legacy of those we&apos;ve lost continues to inspire and guide us. Our mission is to make the act of remembering as beautiful, personal, and enduring as the lives we honor.
             </p>
           </div>
           <div className="mt-8 sm:mt-12 bg-white shadow-sm rounded-lg p-4 sm:p-6">
             <h4 className="text-lg sm:text-xl font-semibold text-gray-900">A Labor of Love</h4>
             <p className="mt-2 text-sm sm:text-base text-gray-600">
-              MemoriesLived.com is lovingly crafted by CJM Ashton LLC, based in the heart of Austin, TX. We pour our passion into creating a platform that respects the delicate nature of loss while celebrating the enduring power of memory. Every feature, every pixel is designed with care, understanding that we're not just building a website, but a home for your most treasured recollections.
+              MemoriesLived.com is lovingly crafted by CJM Ashton LLC, based in the heart of Austin, TX. We pour our passion into creating a platform that respects the delicate nature of loss while celebrating the enduring power of memory. Every feature, every pixel is designed with care, understanding that we&apos;re not just building a website, but a home for your most treasured recollections.
             </p>
           </div>
           <div className="mt-8 sm:mt-16 border-t border-gray-200 pt-6 sm:pt-8">
             <p className="text-sm sm:text-base text-gray-500 italic text-center">
-              "To live in hearts we leave behind is not to die." - Thomas Campbell
+              &ldquo;To live in hearts we leave behind is not to die.&rdquo; - Thomas Campbell
             </p>
           </div>
         </div>
