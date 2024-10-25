@@ -4,11 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { cva, type VariantProps } from "class-variance-authority"
 import { ImageIcon, Send, Share2, ArrowLeft, Heart, MessageCircle } from 'lucide-react'
-
-// Utility function
-function cn(...inputs: (string | undefined)[]) {
-  return inputs.filter(Boolean).join(' ')
-}
+import { cn } from "@/lib/utils"
 
 // Button component
 const buttonVariants = cva(
@@ -109,11 +105,11 @@ const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLL
 Label.displayName = "Label"
 
 // Dialog components
-const Dialog = ({ open, onOpenChange, children }: { open?: boolean, onOpenChange?: (open: boolean) => void, children: React.ReactNode }) => {
+const Dialog = ({ open, onOpenChange, children, className }: { open?: boolean, onOpenChange?: (open: boolean) => void, children: React.ReactNode, className?: string }) => {
   if (!open) return null
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm" onClick={() => onOpenChange && onOpenChange(false)}>
-      <div className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg" onClick={e => e.stopPropagation()}>
+      <div className={cn("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg", className)} onClick={e => e.stopPropagation()}>
         {children}
       </div>
     </div>
@@ -122,7 +118,11 @@ const Dialog = ({ open, onOpenChange, children }: { open?: boolean, onOpenChange
 
 const DialogContent = ({ children }: { children: React.ReactNode }) => <div className="grid gap-4">{children}</div>
 const DialogHeader = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col space-y-1.5 text-center sm:text-left">{children}</div>
-const DialogFooter = ({ children }: { children: React.ReactNode }) => <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2">{children}</div>
+const DialogFooter = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+  <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}>
+    {children}
+  </div>
+)
 const DialogTitle = ({ children }: { children: React.ReactNode }) => <h3 className="text-lg font-semibold leading-none tracking-tight">{children}</h3>
 const DialogDescription = ({ children }: { children: React.ReactNode }) => <p className="text-sm text-muted-foreground">{children}</p>
 
@@ -371,7 +371,7 @@ export default function ProfileManager() {
               alt={profile.username}
               className="w-full h-full rounded-full object-cover"
               onError={(e) => {
-                const target = e.target as HTMLImageElement;
+                const target = e.target  as HTMLImageElement;
                 target.src = '/placeholder.svg?height=64&width=64';
               }}
             />
@@ -382,7 +382,7 @@ export default function ProfileManager() {
           )}
         </div>
         <div>
-          <h2 className="text-xl font-bold">{profile.username}</h2>
+          <h2 className="text-xl  font-bold">{profile.username}</h2>
           <p className="text-gray-600">{profile.handle}</p>
         </div>
       </div>
@@ -439,7 +439,7 @@ export default function ProfileManager() {
       </div>
       <div className="border-t pt-4">
         <p className="text-lg text-gray-600 mb-4">Member since {profile.memberSince}</p>
-        <h3 className="text-2xl font-semibold mb-4">{profile.username}'s posts</h3>
+        <h3 className="text-2xl font-semibold mb-4">{profile.username}&apos;s posts</h3>
         <form onSubmit={handlePostSubmit} className="mb-6">
           <div className="flex items-center space-x-2 mb-2">
             <Input

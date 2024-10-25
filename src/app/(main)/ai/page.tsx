@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, PlusCircle, Settings, Upload, X } from 'lucide-react'
 
-
 interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -157,7 +156,7 @@ export default function Component() {
         onlineCount: 1,
         avatar: '/placeholder.svg?height=128&width=128',
         createdAt: new Date().toLocaleDateString(),
-        personality: getRandomPersonality() || ['friendly', 'helpful'],
+        personality: getRandomPersonality(),
         mood: 'neutral',
         lastInteraction: Date.now()
       }
@@ -198,7 +197,7 @@ export default function Component() {
     if (!chatbot || !message.trim()) return
 
     if (!checkUsageLimit()) {
-      setLimitReachedMessage(`You've reached the usage limit. Please try again in ${getTimeUntilNextUse()}.`)
+      setLimitReachedMessage(`You&apos;ve reached the usage limit. Please try again in ${getTimeUntilNextUse()}.`)
       return
     }
 
@@ -276,14 +275,25 @@ export default function Component() {
   }
 
   const updateChatbot = (updates: Partial<Chatbot>) => {
-    if (updates.personality && !Array.isArray(updates.personality)) {
-      updates.personality = updates.personality.split(',').map(trait => trait.trim()).filter(Boolean);
-    }
-    setChatbot(prevChatbot => ({
-      ...prevChatbot!,
-      ...updates
-    }))
-  }
+    setChatbot(prevChatbot => {
+      if (!prevChatbot) return prevChatbot;
+
+      const updatedChatbot = { ...prevChatbot };
+
+      if (updates.personality !== undefined) {
+        if (Array.isArray(updates.personality)) {
+          updatedChatbot.personality = updates.personality;
+        } else {
+          console.warn('Personality update must be an array of strings');
+        }
+      }
+
+      return {
+        ...updatedChatbot,
+        ...updates,
+      };
+    });
+  };
 
   return (
     <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-8rem)] bg-white flex">
@@ -333,7 +343,7 @@ export default function Component() {
                     <div className={`inline-block p-2 md:p-3 rounded-lg  max-w-[80%] md:max-w-[70%] ${
                       msg.role === 'user' ? 'bg-green-500 text-white' : 
                       msg.mood === 'angry' ? 'bg-red-500 text-white' :
-                      msg.mood === 'sad' ? 'bg-blue-500 text-white' :
+                      msg.mood ===   'sad' ? 'bg-blue-500 text-white' :
                       'bg-gray-100 text-gray-800'
                     }`}>
                       <p className="text-xs md:text-sm">{msg.content}</p>
@@ -524,8 +534,11 @@ export default function Component() {
                   <input
                     type="text"
                     id="chatbot-personality"
-                    value={chatbot.personality?.join(', ') || ''}
-                    onChange={(e) => updateChatbot({ personality: e.target.value.split(',').map(trait => trait.trim()).filter(Boolean) })}
+                    value={chatbot.personality.join(', ')}
+                    onChange={(e) => {
+                      const traits = e.target.value.split(',').map(trait => trait.trim()).filter(Boolean);
+                      updateChatbot({ personality: traits });
+                    }}
                     className="w-full p-2 bg-[#40444b] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-500 text-xs md:text-sm"
                   />
                 </div>
