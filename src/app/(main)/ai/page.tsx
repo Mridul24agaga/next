@@ -234,7 +234,7 @@ export default function Component() {
             { role: 'system', content: `You are an AI assistant named ${chatbot.name} with the following traits: ${chatbot.personality.join(', ')}. Your description: ${chatbot.description}. Your current mood is ${chatbot.mood}. If angry, use all caps and express frustration. If sad, use ellipsis and express melancholy. Please respond accordingly, expressing these traits and moods. Keep your responses concise, ideally within 2-3 sentences.` },
             ...updatedMessages.map(({ role, content }) => ({ role, content }))
           ],
-          max_tokens: 40
+          max_tokens: 70
         })
       })
 
@@ -401,7 +401,7 @@ export default function Component() {
               </div>
               <div className="mt-2 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 text-xs rounded">
                 <p>
-                  <strong>Tip:</strong> Click on the settings icon <Settings className="inline-block h-3 w-3" /> to modify your bot's description, add a profile picture, and customize its personality.
+                  <strong>Tip:</strong> Click on the settings icon <Settings className="inline-block h-3 w-3" /> to modify your bot&#x27;s description, add a profile picture, and customize its personality.
                 </p>
               </div>
             </div>
