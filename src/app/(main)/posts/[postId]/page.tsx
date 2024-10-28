@@ -7,13 +7,13 @@ import UserTooltip from "@/components/UserTooltip";
 import prisma from "@/lib/prisma";
 import { getPostDataInclude, UserData } from "@/lib/types";
 import { Loader2 } from "lucide-react";
-import { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
 
-interface PageProps {
-  params: { postId: string };
+// Define an interface for the follower relationship
+interface FollowerRelation {
+  followerId: string;
 }
 
 const getPost = cache(async (postId: string, loggedInUserId: string) => {
@@ -27,23 +27,9 @@ const getPost = cache(async (postId: string, loggedInUserId: string) => {
   if (!post) notFound();
 
   return post;
-});
+}); 
 
-export async function generateMetadata({
-  params: { postId },
-}: PageProps): Promise<Metadata> {
-  const { user } = await validateRequest();
-
-  if (!user) return {};
-
-  const post = await getPost(postId, user.id);
-
-  return {
-    title: `${post.user.displayName}: ${post.content.slice(0, 50)}...`,
-  };
-}
-
-export default async function Page({ params: { postId } }: PageProps) {
+export default async function Page({ params }: { params: { postId: string } }) {
   const { user } = await validateRequest();
 
   if (!user) {
@@ -54,7 +40,7 @@ export default async function Page({ params: { postId } }: PageProps) {
     );
   }
 
-  const post = await getPost(postId, user.id);
+  const post = await getPost(params.postId, user.id);
 
   return (
     <main className="flex w-full min-w-0 gap-5">
@@ -109,7 +95,7 @@ async function UserInfoSidebar({ user }: UserInfoSidebarProps) {
           initialState={{
             followers: user._count.followers,
             isFollowedByUser: user.followers.some(
-              ({ followerId }) => followerId === loggedInUser.id,
+              ({ followerId }: FollowerRelation) => followerId === loggedInUser.id
             ),
           }}
         />
