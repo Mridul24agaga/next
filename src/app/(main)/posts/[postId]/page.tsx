@@ -11,9 +11,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
 
-// Define an interface for the follower relationship
-interface FollowerRelation {
-  followerId: string;
+// Update the PageProps interface to match Next.js 13+ App Router expectations
+interface PageProps {
+  params: Promise<{ postId: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const getPost = cache(async (postId: string, loggedInUserId: string) => {
@@ -29,7 +30,7 @@ const getPost = cache(async (postId: string, loggedInUserId: string) => {
   return post;
 }); 
 
-export default async function Page({ params }: { params: { postId: string } }) {
+export default async function Page({ params, searchParams }: PageProps) {
   const { user } = await validateRequest();
 
   if (!user) {
@@ -40,7 +41,9 @@ export default async function Page({ params }: { params: { postId: string } }) {
     );
   }
 
-  const post = await getPost(params.postId, user.id);
+  // Resolve the params promise
+  const resolvedParams = await params;
+  const post = await getPost(resolvedParams.postId, user.id);
 
   return (
     <main className="flex w-full min-w-0 gap-5">
@@ -95,7 +98,7 @@ async function UserInfoSidebar({ user }: UserInfoSidebarProps) {
           initialState={{
             followers: user._count.followers,
             isFollowedByUser: user.followers.some(
-              ({ followerId }: FollowerRelation) => followerId === loggedInUser.id
+              ({ followerId }: { followerId: string }) => followerId === loggedInUser.id
             ),
           }}
         />
