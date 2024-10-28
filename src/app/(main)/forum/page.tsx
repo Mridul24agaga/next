@@ -6,7 +6,26 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Hash, Plus, Search, Heart, MessageCircle, Calendar, Eye } from 'lucide-react'
+import { Hash, Plus, Search, Heart, MessageCircle, Calendar, Eye, AlertTriangle, Globe } from 'lucide-react'
+
+function Alert({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4" role="alert">
+      <div className="flex items-center">
+        <AlertTriangle className="h-5 w-5 mr-2" />
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function AlertTitle({ children }: { children: React.ReactNode }) {
+  return <h3 className="font-bold">{children}</h3>
+}
+
+function AlertDescription({ children }: { children: React.ReactNode }) {
+  return <p>{children}</p>
+}
 
 interface Reply {
   id: number;
@@ -61,18 +80,17 @@ function CardFooter({ children }: { children: ReactNode }) {
   return <div className="px-6 py-4 bg-gray-50 rounded-b-lg">{children}</div>
 }
 
-// Local Storage API
 const localStorageAPI = {
   getForums: (): Forum[] => {
-    const forums = localStorage.getItem('forums')
+    const forums = localStorage.getItem('public_forums')
     return forums ? JSON.parse(forums) : []
   },
   setForums: (forums: Forum[]) => {
-    localStorage.setItem('forums', JSON.stringify(forums))
+    localStorage.setItem('public_forums', JSON.stringify(forums))
   },
 }
 
-export default function ForumPage() {
+export default function PublicForumPage() {
   const [forums, setForums] = useState<Forum[]>([])
   const [title, setTitle] = useState('')
   const [hashtag, setHashtag] = useState('')
@@ -190,8 +208,15 @@ export default function ForumPage() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Forum Page</h1>
+      <h1 className="text-3xl font-bold mb-6">Public Forum Page</h1>
       
+      <Alert>
+        <AlertTitle>Public Forum</AlertTitle>
+        <AlertDescription>
+          All posts in this forum are public and visible to everyone across all accounts. Please be mindful of what you share.
+        </AlertDescription>
+      </Alert>
+
       <div className="flex justify-between items-center mb-6">
         <div className="relative w-64">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -205,12 +230,12 @@ export default function ForumPage() {
         </div>
         <Dialog open={isNewForumDialogOpen} onOpenChange={setIsNewForumDialogOpen}>
           <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> Create New Forum</Button>
+            <Button><Plus className="mr-2 h-4 w-4" /> Create New Public Forum</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Create a New Forum</DialogTitle>
-              <DialogDescription>Fill in the details to create a new forum topic.</DialogDescription>
+              <DialogTitle>Create a New Public Forum</DialogTitle>
+              <DialogDescription>Fill in the details to create a new public forum topic. Remember, this will be visible to all users.</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="grid gap-4 py-4">
@@ -255,7 +280,7 @@ export default function ForumPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Create Forum</Button>
+                <Button type="submit">Create Public Forum</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -272,7 +297,13 @@ export default function ForumPage() {
                 </div>
                 <div>
                   <CardTitle>{forum.title}</CardTitle>
-                  <CardDescription>Anonymous • {new Date(forum.createdAt).toLocaleString()} • {forum.category}</CardDescription>
+                  <CardDescription>
+                    Anonymous • {new Date(forum.createdAt).toLocaleString()} • {forum.category}
+                    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                      <Globe className="w-3 h-3 mr-1" />
+                      Public
+                    </span>
+                  </CardDescription>
                 </div>
               </div>
               <p className="mb-4">{forum.content}</p>
@@ -310,6 +341,10 @@ export default function ForumPage() {
                         <Heart className="w-4 h-4 mr-1" />
                         {forum.likes} Likes
                       </span>
+                      <span className="flex items-center ml-3 mb-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                        <Globe className="w-3 h-3 mr-1" />
+                        Public
+                      </span>
                     </DialogDescription>
                   </DialogHeader>
                   <div className="flex-grow mt-4 overflow-y-auto">
@@ -342,10 +377,11 @@ export default function ForumPage() {
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="Write a reply..."
+                                
                                 className="w-full p-2 border rounded-md"
                                 rows={2}
                               />
-                              <Button onClick={() => addReply(forum.id, comment.id)} className="mt-2">Post Reply</Button>
+                              <Button onClick={() => addReply(forum.id, comment.id)} className="mt-2">Post Public Reply</Button>
                             </div>
                           )}
                           {comment.replies.map(reply => (
@@ -368,12 +404,11 @@ export default function ForumPage() {
                     <Textarea
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      placeholder="Add a comment..."
+                      placeholder="Add a public comment..."
                       className="w-full p-2 border rounded-md"
-                      
                       rows={3}
                     />
-                    <Button onClick={() => addComment(forum.id)} className="mt-2">Post Comment</Button>
+                    <Button onClick={() => addComment(forum.id)} className="mt-2">Post Public Comment</Button>
                   </div>
                 </DialogContent>
               </Dialog>

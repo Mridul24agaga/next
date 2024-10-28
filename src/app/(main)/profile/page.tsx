@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { cva, type VariantProps } from "class-variance-authority"
-import { ImageIcon, Send, Share2, ArrowLeft, Heart, MessageCircle } from 'lucide-react'
+import { ImageIcon, Send, Share2, ArrowLeft, Heart, MessageCircle, Upload } from 'lucide-react'
 import { cn } from "@/lib/utils"
 
 // Button component
@@ -164,9 +164,11 @@ export default function ProfileManager() {
   const [newPost, setNewPost] = useState('')
   const [newPostImage, setNewPostImage] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const profileId = searchParams.get('id')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const storedProfiles = localStorage.getItem('profiles')
@@ -220,12 +222,24 @@ export default function ProfileManager() {
     }
   }
 
+  const handleProfilePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfilePhotoFile(e.target.files[0])
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const username = formData.get('username') as string
     const bio = formData.get('bio') as string
-    const photo = formData.get('photo') as string
+
+    let photo = currentProfile?.photo || ''
+    if (profilePhotoFile) {
+      // In a real application, you would upload the file to a server here
+      // For this example, we'll use a placeholder URL
+      photo = URL.createObjectURL(profilePhotoFile)
+    }
 
     if (isEditing && currentProfile) {
       const updatedProfile = { ...currentProfile, username, bio, photo }
@@ -252,6 +266,7 @@ export default function ProfileManager() {
     }
     setIsEditing(false)
     setIsDialogOpen(false)
+    setProfilePhotoFile(null)
   }
 
   const handleEdit = (profile: Profile) => {
@@ -352,7 +367,7 @@ export default function ProfileManager() {
       )
       setProfiles(updatedProfiles)
       setCurrentProfile(updatedProfile)
-      localStorage.setItem('profiles', JSON.stringify(updatedProfiles))
+      localStorage.setItem('profiles',   JSON.stringify(updatedProfiles))
     }
   }
 
@@ -371,18 +386,18 @@ export default function ProfileManager() {
               alt={profile.username}
               className="w-full h-full rounded-full object-cover"
               onError={(e) => {
-                const target = e.target  as HTMLImageElement;
+                const target = e.target as HTMLImageElement;
                 target.src = '/placeholder.svg?height=64&width=64';
               }}
             />
           ) : (
-            <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0  0 20 20">
+            <svg className="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
           )}
         </div>
         <div>
-          <h2 className="text-xl  font-bold">{profile.username}</h2>
+          <h2 className="text-xl font-bold">{profile.username}</h2>
           <p className="text-gray-600">{profile.handle}</p>
         </div>
       </div>
@@ -419,7 +434,7 @@ export default function ProfileManager() {
               }}
             />
           ) : (
-            <svg className="w-24 h-24  text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-24 h-24 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
           )}
@@ -559,14 +574,35 @@ export default function ProfileManager() {
                 />
               </div>
               <div>
-                <Label htmlFor="photo">Photo URL</Label>
-                <Input
-                  id="photo"
-                  name="photo"
-                  type="url"
-                  defaultValue={currentProfile?.photo || ''}
-                  placeholder="https://example.com/your-photo.jpg"
-                />
+                <Label htmlFor="photo">Profile Photo</Label>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    variant="outline"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Photo
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    id="photo"
+                    name="photo"
+                    accept="image/*"
+                    onChange={handleProfilePhotoChange}
+                    className="hidden"
+                  />
+                  {(profilePhotoFile || currentProfile?.photo) && (
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <img
+                        src={profilePhotoFile ? URL.createObjectURL(profilePhotoFile) : currentProfile?.photo}
+                        alt="Profile preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <Label htmlFor="bio">Bio</Label>

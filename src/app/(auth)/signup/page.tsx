@@ -1,4 +1,4 @@
-import signupImage from "@/assets/signup-image.png.png";
+import signupImage from "@/assets/sign-up.jpg";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,7 +32,7 @@ export default function Page() {
       </div>
 
       {/* Right side: Image */}
-      <div className="hidden md:block md:w-[35%]">
+      <div className="hidden md:block md:w-[30%]">
         <Image
           src={signupImage}
           alt="Sign Up Image"

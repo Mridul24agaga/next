@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, PlusCircle, Settings, Upload, X } from 'lucide-react'
+import { Send, PlusCircle, Settings, Upload, X, AlertTriangle } from 'lucide-react'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -82,7 +82,9 @@ export default function Component() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [usageLimit, setUsageLimit] = useState<UsageLimit>({ count: 0, lastUsed: 0 })
   const [limitReachedMessage, setLimitReachedMessage] = useState<string | null>(null)
+  const [spellingSwitchOn, setSpellingSwitchOn] = useState(false) // Added spelling mistakes toggle state
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [showNotification, setShowNotification] = useState(false)
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -164,6 +166,8 @@ export default function Component() {
       setNewChatbotName('')
       setNewChatbotDescription('')
       setIsDialogOpen(false)
+      setShowNotification(true) // Show the notification
+      setTimeout(() => setShowNotification(false), 5000) // Hide after 5 seconds
     }
   }
 
@@ -197,7 +201,7 @@ export default function Component() {
     if (!chatbot || !message.trim()) return
 
     if (!checkUsageLimit()) {
-      setLimitReachedMessage(`You&apos;ve reached the usage limit. Please try again in ${getTimeUntilNextUse()}.`)
+      setLimitReachedMessage(`You've reached the usage limit. Please try again in ${getTimeUntilNextUse()}.`)
       return
     }
 
@@ -225,12 +229,12 @@ export default function Component() {
           'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-4-1106-preview',
           messages: [
             { role: 'system', content: `You are an AI assistant named ${chatbot.name} with the following traits: ${chatbot.personality.join(', ')}. Your description: ${chatbot.description}. Your current mood is ${chatbot.mood}. If angry, use all caps and express frustration. If sad, use ellipsis and express melancholy. Please respond accordingly, expressing these traits and moods. Keep your responses concise, ideally within 2-3 sentences.` },
             ...updatedMessages.map(({ role, content }) => ({ role, content }))
           ],
-          max_tokens: 70
+          max_tokens: 40
         })
       })
 
@@ -245,7 +249,7 @@ export default function Component() {
       if (chatbot.personality.includes('casual')) {
         content = addShortForms(content)
       }
-      content = simulateTypingErrors(content)
+      content = spellingSwitchOn ? simulateTypingErrors(content) : content; // Modified to use spellingSwitchOn
 
       // Apply mood-based modifications
       if (chatbot.mood === 'angry') {
@@ -346,7 +350,7 @@ export default function Component() {
                       msg.mood ===   'sad' ? 'bg-blue-500 text-white' :
                       'bg-gray-100 text-gray-800'
                     }`}>
-                      <p className="text-xs md:text-sm">{msg.content}</p>
+                      <p className="text-xs  md:text-sm">{msg.content}</p>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       {msg.timestamp}
@@ -357,6 +361,16 @@ export default function Component() {
               <div ref={messagesEndRef} />
             </div>
             <div className="bg-white p-3 md:p-4 border-t border-gray-200">
+              <div className="flex items-center justify-end mb-2"> {/* Added toggle button */}
+                <label htmlFor="spelling-toggle" className="mr-2 text-xs text-gray-500">Spelling mistakes</label>
+                <button
+                  id="spelling-toggle"
+                  onClick={() => setSpellingSwitchOn(!spellingSwitchOn)}
+                  className={`w-10 h-5 rounded-full focus:outline-none transition-colors duration-200 ease-in-out ${spellingSwitchOn ? 'bg-green-500' : 'bg-gray-300'}`}
+                >
+                  <span className={`block w-4 h-4 rounded-full bg-white transform transition-transform duration-200 ease-in-out ${spellingSwitchOn ? 'translate-x-5' : 'translate-x-1'}`} />
+                </button>
+              </div> {/* End of toggle button */}
               {limitReachedMessage && (
                 <div className="mb-3 md:mb-4 p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded text-xs md:text-sm">
                   {limitReachedMessage}
@@ -385,6 +399,11 @@ export default function Component() {
                   <Send className="h-4 w-4 md:h-5 md:w-5" />
                 </button>
               </div>
+              <div className="mt-2 p-2 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 text-xs rounded">
+                <p>
+                  <strong>Tip:</strong> Click on the settings icon <Settings className="inline-block h-3 w-3" /> to modify your bot's description, add a profile picture, and customize its personality.
+                </p>
+              </div>
             </div>
           </div>
         ) : (
@@ -402,7 +421,7 @@ export default function Component() {
               </div>
             </div>
             <div className="flex-1 flex items-center justify-center text-gray-500 text-xs md:text-sm bg-white p-4">
-              <p className="text-center">Create a chatbot to start chatting</p>
+              <p className="text-center">Click the + button to create the ChatBot</p>
             </div>
           </div>
         )}
@@ -436,17 +455,29 @@ export default function Component() {
                 onChange={(e) => setNewChatbotName(e.target.value)}
                 className="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-xs md:text-sm"
               />
+              <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 rounded-r-md">
+                <p className="text-sm">
+                  In the description, express how you want the chatbot to be. This chatbot can act as a real human if you add emotions and human-like behavior. It will respond accordingly.
+                </p>
+              </div>
               <textarea
-                placeholder="Enter chatbot description (at least 200 words)"
+                placeholder="Enter chatbot description (50 words max)"
                 value={newChatbotDescription}
                 onChange={(e) => setNewChatbotDescription(e.target.value)}
-                className="w-full p-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-xs md:text-sm"
-                rows={8}
+                className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-xs md:text-sm"
+                rows={4}
               />
+              <p className="text-xs text-gray-500 mb-4">
+                Words: {newChatbotDescription.split(/\s+/).filter(Boolean).length}/50
+              </p>
+              <div className="flex items-center text-sm text-yellow-600 mb-4">
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                <p>Please note that the chatbot is in beta version and can make mistakes. It is not fully live yet.</p>
+              </div>
               <div className="flex justify-end">
                 <button
                   onClick={createChatbot}
-                  disabled={newChatbotDescription.split(/\s+/).length < 200}
+                  disabled={newChatbotDescription.split(/\s+/).filter(Boolean).length > 50 || newChatbotName.trim() === ''}
                   className="px-3 py-1 md:px-4 md:py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 text-xs md:text-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Create
@@ -551,6 +582,12 @@ export default function Component() {
           </motion.div>
         )}
       </AnimatePresence>
+      {showNotification && (
+        <div className="fixed bottom-4 right-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded shadow-md">
+          <p className="font-bold">Chatbot created successfully!</p>
+          <p>Click on the settings icon to modify the description, add a profile picture, and customize your bot.</p>
+        </div>
+      )}
     </div>
   )
 }
